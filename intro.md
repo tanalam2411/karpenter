@@ -175,6 +175,74 @@ to
 <img width="719" height="304" alt="image" src="https://github.com/user-attachments/assets/2994bca7-6eb6-4c61-8052-5bda772935bc" />
 
 
+## Correcting nodes experiencing Drift
+
+> Drift: detects and corrects NodeClaim's which no longer match their owning NodePool, and/or NodeClass specifications
+
+- Carpenter ends up going and provisioning a node claim in association with every single node that it ends up creating
+- Periodically karpenter will check if node claim are in desired state along with your node-pool and node-class
+- 
+
+```yaml
+kind: NodePool
+...
+spec:
+  template:
+    spec:
+      requirements:
+      - key: "karpenter.sh/capacity-type
+        operator: In
+        values: ["spot"]
+```
+
+```yaml
+kind: NodePool
+...
+spec:
+  template:
+    spec:
+      requirements:
+      - key: "karpenter.sh/capacity-type
+        operator: In
+        values: ["on-demand"]
+```
+
+
+## Karpenter Drift & Disruption Summary
+
+### Drift in Karpenter
+- Karpenter provisions nodes based on **NodePool** and **NodeClass**.
+- Each node has an associated **NodeClaim**.
+- Karpenter continuously checks if NodeClaims match the desired state.
+- If a mismatch is detected, the node is marked as **drifted**.
+
+### What happens when a node drifts
+- The node is **tainted** to stop new workloads.
+- Karpenter simulates removing the node.
+- If workloads can’t be rescheduled, a **new node is pre-provisioned**.
+- The drifted node is **safely drained and removed**.
+
+### Example: Spot → On-Demand
+- Change capacity type in NodePool from **Spot to On-Demand**.
+- Existing Spot nodes become **drifted**.
+- Karpenter replaces them with **On-Demand nodes** safely.
+
+<img width="942" height="478" alt="image" src="https://github.com/user-attachments/assets/b27440ac-a948-43e5-aa01-09336d44daef" />
+
+### Disruption Budgets
+- Control **how much**, **when**, and **why** disruption can happen.
+- Example rules:
+  - **Business hours**:  
+    - 0% disruption for **drifted** and **underutilized** nodes.
+  - **Any time**:  
+    - 100% disruption allowed for **empty** nodes.
+  - **General case**:  
+    - 10% disruption allowed for **drifted** and **underutilized** nodes.
+
+### Conflict handling
+- If disruption budgets conflict,  
+  **Karpenter always applies the most restrictive rule**.
+
 
 
 
