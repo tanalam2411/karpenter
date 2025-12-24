@@ -131,7 +131,7 @@ spec:
 
 - Consolidation: Reducing number of nodes or replacing nodes for optimal bin-packing
 - Consolidation Policies: WhenEmpty or WhenEmptyorUnderutilized
-- Optional: ConsolidateAfter
+- Optional: ConsolidateAfter (by default set to 0)
 
 ```yaml
 apiVersion: karpenter.sh/v1
@@ -140,4 +140,43 @@ spec:
   disruption:
     consolidationPolicy: WhenEmptyOrUnderutilized
 ```
+
+### Karpenter optimization with ConsolidationPolicy
+
+Without consolidateAfter (by default set to 0)
+
+<img width="690" height="299" alt="image" src="https://github.com/user-attachments/assets/d61e092e-dae3-4b36-8597-61bcbbeb4b70" />
+
+This could cause nodes to be created and terminated frequently.
+
+
+#### Time base consideration: consolidateAfter with WhenEmptyOrUnderutilized
+
+
+```yaml
+apiVersion: karpenter.sh/v1
+kind: NodePool
+spec:
+  distruption:
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 1h
+```
+
+- Here with the help of `consolidateAfter: 1h` we've added essentially an hour gap(after last pod creation or deletion) between when each action will take place in terms of consolidation
+
+<img width="1222" height="554" alt="image" src="https://github.com/user-attachments/assets/078062f0-e68e-448f-b735-47a4d519bf97" />
+
+Above example is delete scnario, now will see replace scnario
+
+<img width="922" height="300" alt="image" src="https://github.com/user-attachments/assets/fbcd0ed7-2610-4e16-958b-4fb482b982d4" />
+
+to
+
+<img width="719" height="304" alt="image" src="https://github.com/user-attachments/assets/2994bca7-6eb6-4c61-8052-5bda772935bc" />
+
+
+
+
+
+
 
