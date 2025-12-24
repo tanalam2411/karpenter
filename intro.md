@@ -124,3 +124,20 @@ spec:
 | karpenter.k8s.aws/instance-encryption-in-transit-supported| true           |
 | karpenter.k8s.aws/instance-category                       | g              |
 
+
+## Node Disruption - Consolidation
+
+<img width="1182" height="250" alt="image" src="https://github.com/user-attachments/assets/60e9cb26-2e78-47b1-9437-9aff7d73b416" />
+
+- Consolidation: Reducing number of nodes or replacing nodes for optimal bin-packing
+- Consolidation Policies: WhenEmpty or WhenEmptyorUnderutilized
+- Optional: ConsolidateAfter
+
+```yaml
+apiVersion: karpenter.sh/v1
+kind: NodePool
+spec:
+  disruption:
+    consolidationPolicy: WhenEmptyOrUnderutilized
+```
+
