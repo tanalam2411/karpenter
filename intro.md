@@ -109,3 +109,18 @@ metadata:
 spec:
   nodeSelector:
     team: "team-a"
+```
+
+## Sample well-known labels added to nodes
+
+| Label                                                     | Example        |
+|-----------------------------------------------------------|----------------|
+| topology.kubernetes.io/zone                               | us-east-2a     |
+| node.kubernetes.io/instance-type                          | g4dn.8xlarge   |
+| kubernetes.io/os                                          | linux          |
+| kubernetes.io/arch                                        | amd64          |
+| karpenter.sh/capacity-type                                | spot           |
+| karpenter.k8s.aws/instance-hypervisor                     | nitro          |
+| karpenter.k8s.aws/instance-encryption-in-transit-supported| true           |
+| karpenter.k8s.aws/instance-category                       | g              |
+
